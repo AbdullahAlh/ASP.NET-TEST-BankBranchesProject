@@ -1,0 +1,102 @@
+﻿@{
+}
+@model List<BankBranch>
+
+<h5 style="color: darkgreen; font-family: 'Arial', sans-serif; margin-bottom: 20px;">Branches</h5>
+<a href="/Bank/Create/" class="add-button">
+    <button>
+        Add New Branch
+    </button>
+    
+
+</a>
+<style>
+
+    .add-button button {
+        border: none; 
+        background-color: white; 
+        padding: 10px 20px; 
+        cursor: pointer;
+        color: darkgreen; font-family: 'Arial', sans-serif;
+    }
+
+    .add-button {
+        float: right;
+        margin-top: -50px; 
+        margin-right: 10px; 
+    }
+    body {
+        font-family: 'Arial', sans-serif; 
+        margin: 20px; 
+    }
+
+    table {
+
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px 15px; 
+        text-align: left;
+        border-bottom: 2px solid darkgreen;
+    }
+
+    th {
+        background-color: white;
+        color: darkgreen;
+        font-weight: bold; 
+    }
+
+    td {
+        color: black; 
+    }
+
+    tr:last-child td {
+        border-bottom: none; 
+    }
+
+    a {
+        text-decoration: none; 
+        color: deepskyblue;
+    }
+
+        a:hover {
+            text-decoration: underline; 
+        }
+
+    
+</style>
+
+<table class="table table-bordered table-hover">
+
+    
+    <thead>
+        <tr>
+            <th>Branch Name</th>
+            <th>Location</th>
+            <th>Branch Manager</th>
+            <th>Employee Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bankBranch in Model)
+        {
+            <tr>
+                <td>
+                    <a href="/Bank/Details/@bankBranch.Id">@bankBranch.Name</a> 
+
+                </td>
+                <td>
+                    <a href="@bankBranch.Location"
+                       target="_blank">
+                        <img src="images/location-outline.svg" height="20px"  />
+                    </a>
+                </td>
+                <td>@bankBranch.BranchManager</td>
+                <td>@bankBranch.EmployeeCount</td>
+            </tr>
+        }
+    </tbody>
+</table>

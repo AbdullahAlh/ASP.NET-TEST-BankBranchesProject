@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Bank Details";
+}
+@model BankBranches.Models.BankBranch
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Details</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            color: black;
+            background-color: white;
+            margin: 60px;
+        }
+
+        h2, h4 {
+            color: darkgreen;
+            margin-bottom: 10px;
+        }
+
+        .details-container {
+            display: flex;
+            justify-content: space-between;
+            background-color: white;
+            color: black;
+            margin-top: 40px;
+            padding: 15px;
+            border: 1px solid darkgreen;
+        }
+
+        .details-list {
+            flex: 1;
+            margin-right: 20px;
+        }
+
+        dt {
+            font-weight: bold;
+            color: darkgreen;
+        }
+
+        dd {
+            margin-left: 10px;
+        }
+
+        img {
+            height: 300px; 
+            width: auto; 
+            align-self: center; 
+        }
+
+        hr {
+            border-color: darkgreen;
+        }
+
+        a {
+            text-decoration: none; /* Removes underline from links */
+            color: deepskyblue; 
+        }
+
+            a:hover {
+                text-decoration: underline; /* Optional: Adds underline on hover for better user interaction */
+            }
+    </style>
+</head>
+<body>
+    <div>
+        <h2>Bank Details</h2>
+        <hr />
+        <div class="details-container">
+            <dl class="details-list dl-horizontal">
+                <dt>Name:</dt>
+                <dd>@Model.Name</dd>
+                <dt>Branch Manager:</dt>
+                <dd>@Model.BranchManager</dd>
+                <dt>Number Of Employees:</dt>
+                <dd>@Model.EmployeeCount</dd>
+                <dt>Location:</dt>
+                <dd><a href="@Model.Location" target="_blank">Location</a></dd>
+            </dl>
+            <img src="https://www.gckuwait.com/wp-content/uploads/2016/12/gulf-consult-KFH-Branches2.jpg" alt="Cinque Terre">
+        </div>
+    </div>
+</body>
+</html>

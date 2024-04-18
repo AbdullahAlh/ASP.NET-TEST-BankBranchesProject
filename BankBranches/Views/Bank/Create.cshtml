@@ -1,0 +1,68 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model NewBranchForm
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Branch</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            color: black; 
+            background-color: white; 
+            margin: 20px;
+        }
+
+        h2 {
+            color: darkgreen; 
+            margin-bottom: 20px; 
+        }
+
+        form {
+            background-color: white; 
+            padding: 20px; 
+            border: 1px solid darkgreen; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+        }
+
+        .btn-primary {
+            background-color: darkgreen; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            transition: background-color 0.3s; 
+        }
+
+            .btn-primary:hover {
+                background-color: #165b33;
+            }
+
+        input, textarea, select {
+            padding: 8px; 
+            margin-top: 5px; 
+            margin-bottom: 20px; 
+            width: calc(100% - 16px); 
+            box-sizing: border-box;
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+        }
+    </style>
+</head>
+<body>
+    <h2>Create New Branch</h2>
+    @using (Html.BeginForm("Create", "Bank", FormMethod.Post))
+    {
+        @Html.EditorForModel()
+        <button class="btn btn-primary" type="submit">Save</button>
+    }
+</body>
+</html>
