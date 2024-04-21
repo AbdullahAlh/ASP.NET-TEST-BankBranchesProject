@@ -1,5 +1,7 @@
 ﻿using BankBranches.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace BankBranches.Controllers
 {
@@ -11,10 +13,26 @@ namespace BankBranches.Controllers
       new BankBranch {Id = 1,EmployeeCount = 10, Name = "KFH Salwa",Location = "https://maps.app.goo.gl/GSnB2U7kzSrcZ8Jt8",BranchManager = "Fatmah Buyabes"},
       new BankBranch {Id=2,EmployeeCount = 20, Name = "KFH Mishref",Location = "https://g.co/kgs/Y86f6VW",BranchManager = "Fatmah Alghannam"}
   };
-        public IActionResult Index()
+        public IActionResult Index(string searchString)
         {
-            return View(branches);
+            List<BankBranch> filteredBranches;
+            using (var context = new BankContext())
+            {
+                IQueryable<BankBranch> query = context.Branches; 
+
+                if (!String.IsNullOrEmpty(searchString))
+                {
+                    query = query.Where(branch => branch.Name.Contains(searchString));
+                }
+
+                filteredBranches = query.ToList();
+            }
+
+            return View(filteredBranches);
         }
+
+
+
         public IActionResult Create()
         {
 
@@ -35,34 +53,115 @@ namespace BankBranches.Controllers
                 branch.BranchManager = branchManager;
                 branch.EmployeeCount = employeeCount;
                 branch.Location = location;
-               
+
                 branches.Add(branch);
+                using (var context = new BankContext())
+                {
+                    context.Branches.Add(branch);
+                    context.SaveChanges();  
+                }
+
 
 
                 return RedirectToAction("Index");
 
             }
 
-            return View("Create");
+            return View("Create", model);
 
         }
         public IActionResult Details(int id)
-        {
-            var branch = branches.SingleOrDefault(a => a.Id == id);
-            if (branches == null)
-            {
-                return RedirectToAction("Index");
 
+
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
+
+         
+            BankBranch branch = null;
+            using (var context = new BankContext())
+            {
+                branch = context.Branches.FirstOrDefault(b => b.Id == id);
+            }
+            if (branch == null)
+            {
+                return NotFound();
+            }
+
             return View(branch);
         }
-        public IActionResult Register()
+    
+    public IActionResult Register()
         {
             return View();
         }
 
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            BankBranch branch;
+            using (var context = new BankContext())
+            {
+                branch = context.Branches.FirstOrDefault(b => b.Id == id);
+            }
 
+            if (branch == null)
+            {
+                return NotFound();
+            }
+
+            return View(branch);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken] 
+        public IActionResult Edit(int id, BankBranch branch)
+        {
+            if (id != branch.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                using (var context = new BankContext())
+                {
+                    try
+                    {
+                        context.Update(branch);
+                        context.SaveChanges();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!BranchExists(branch.Id, context))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+
+                    return RedirectToAction(nameof(Index));  
+                }
+            }
+
+         
+            return View(branch);
+        }
+
+        private bool BranchExists(int id, BankContext context)
+        {
+            return context.Branches.Any(e => e.Id == id);
+        }
+
+       
 
     }
 

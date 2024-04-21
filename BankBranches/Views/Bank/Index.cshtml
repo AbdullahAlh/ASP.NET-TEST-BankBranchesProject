@@ -1,102 +1,109 @@
-﻿@{
-}
-@model List<BankBranch>
+﻿@model List<BankBranch>
 
-<h5 style="color: darkgreen; font-family: 'Arial', sans-serif; margin-bottom: 20px;">Branches</h5>
-<a href="/Bank/Create/" class="add-button">
-    <button>
-        Add New Branch
-    </button>
-    
+<h1 style="color: darkgreen; font-family: 'Arial', sans-serif;">Branches</h1>
 
-</a>
-<style>
+<div class="toolbar">
+    <a href="/Bank/Create" class="button add-button">Add New Branch</a>
+    <form method="get" action="@Url.Action("Index")" class="search-form">
+        <input type="text" name="searchString" placeholder="Search by name..." aria-label="Search by branch name" class="search-input">
+        <button type="submit" class="search-button">Search</button>
+    </form>
+</div>
 
-    .add-button button {
-        border: none; 
-        background-color: white; 
-        padding: 10px 20px; 
-        cursor: pointer;
-        color: darkgreen; font-family: 'Arial', sans-serif;
-    }
-
-    .add-button {
-        float: right;
-        margin-top: -50px; 
-        margin-right: 10px; 
-    }
-    body {
-        font-family: 'Arial', sans-serif; 
-        margin: 20px; 
-    }
-
-    table {
-
-        border-collapse: collapse;
-        width: 100%;
-        margin-top: 20px;
-    }
-
-    th, td {
-        padding: 12px 15px; 
-        text-align: left;
-        border-bottom: 2px solid darkgreen;
-    }
-
-    th {
-        background-color: white;
-        color: darkgreen;
-        font-weight: bold; 
-    }
-
-    td {
-        color: black; 
-    }
-
-    tr:last-child td {
-        border-bottom: none; 
-    }
-
-    a {
-        text-decoration: none; 
-        color: deepskyblue;
-    }
-
-        a:hover {
-            text-decoration: underline; 
-        }
-
-    
-</style>
-
-<table class="table table-bordered table-hover">
-
-    
+<table class="branch-table">
     <thead>
         <tr>
             <th>Branch Name</th>
             <th>Location</th>
             <th>Branch Manager</th>
             <th>Employee Count</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var bankBranch in Model)
+        @foreach (var branch in Model)
         {
             <tr>
+                <td><a href="/Bank/Details/@branch.Id">@branch.Name</a></td>
                 <td>
-                    <a href="/Bank/Details/@bankBranch.Id">@bankBranch.Name</a> 
-
-                </td>
-                <td>
-                    <a href="@bankBranch.Location"
-                       target="_blank">
-                        <img src="images/location-outline.svg" height="20px"  />
+                    <a href="@branch.Location" target="_blank">
+                        <img src="images/location-outline.svg" height="20px" />
                     </a>
                 </td>
-                <td>@bankBranch.BranchManager</td>
-                <td>@bankBranch.EmployeeCount</td>
+                <td>@branch.BranchManager</td>
+                <td>@branch.EmployeeCount</td>
+                <td>
+                    <a href="/Bank/Edit/@branch.Id">Edit</a>
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .toolbar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .button, .search-button {
+        background-color: seagreen;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        text-decoration: none;
+        font-family: 'Arial', sans-serif;
+    }
+
+        .button:hover, .search-button:hover {
+            background-color: seagreen;
+        }
+
+    .search-form {
+        display: flex;
+    }
+
+    .search-input {
+        padding: 10px;
+        margin-right: 10px;
+        width: 200px;
+    }
+
+    .branch-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+    }
+
+        .branch-table th, .branch-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .branch-table th {
+            background-color: seagreen;
+            color: white;
+        }
+
+    a {
+        color: deepskyblue;
+        text-decoration: none;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+</style>
