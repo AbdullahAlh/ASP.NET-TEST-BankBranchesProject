@@ -42,9 +42,9 @@
             color: white;
             border-radius: 5px;
             text-decoration: none;
-            position: absolute; /* Position relative to the nearest positioned ancestor */
-            top: 20px; /* Position from the top of the nearest positioned ancestor */
-            right: 20px; /* Position from the right of the nearest positioned ancestor */
+            position: absolute; 
+            top: 20px; 
+            right: 20px;
             transition: background-color 0.3s;
         }
 
@@ -68,6 +68,15 @@
         <h2>Bank Details</h2>
         <a href="@Url.Action("AddEmployee", "Bank", new { id = Model.Id })" class="action-button">Add Employee</a>
         <hr />
+        <div>
+            <h4>Employees</h4>
+            <ul>
+                @foreach (var employee in Model.Employees)
+                {
+                    <li>@employee.Name - @employee.Position</li>
+                }
+            </ul>
+        </div>
         <div class="details-container">
             <dl class="details-list">
                 <dt>Name:</dt>
@@ -80,16 +89,9 @@
                 <dd><a href="@Model.Location" target="_blank">Location</a></dd>
             </dl>
             <img src="https://www.gckuwait.com/wp-content/uploads/2016/12/gulf-consult-KFH-Branches2.jpg" alt="Bank Branch Image">
+            
         </div>
-        <div>
-            <h4>Employees</h4>
-            <ul>
-                @foreach (var employee in Model.Employees)
-                {
-                    <li>@employee.Name - @employee.Position</li>
-                }
-            </ul>
-        </div>
+        
     </div>
 </body>
 </html>
