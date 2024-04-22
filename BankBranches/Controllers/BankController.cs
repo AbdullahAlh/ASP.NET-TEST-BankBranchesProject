@@ -15,10 +15,14 @@ namespace BankBranches.Controllers
   };
         public IActionResult Index(string searchString)
         {
+
             List<BankBranch> filteredBranches;
             using (var context = new BankContext())
             {
-                IQueryable<BankBranch> query = context.Branches; 
+               // context.Employees.RemoveRange(context.Employees.ToList());
+                // context.SaveChanges();
+
+                IQueryable<BankBranch> query = context.Branches;
 
                 if (!String.IsNullOrEmpty(searchString))
                 {
@@ -58,7 +62,7 @@ namespace BankBranches.Controllers
                 using (var context = new BankContext())
                 {
                     context.Branches.Add(branch);
-                    context.SaveChanges();  
+                    context.SaveChanges();
                 }
 
 
@@ -71,29 +75,29 @@ namespace BankBranches.Controllers
 
         }
         public IActionResult Details(int id)
-
-
         {
-            if (id == null)
+            if (id == 0)
             {
                 return NotFound();
             }
 
-         
-            BankBranch branch = null;
             using (var context = new BankContext())
             {
-                branch = context.Branches.FirstOrDefault(b => b.Id == id);
-            }
-            if (branch == null)
-            {
-                return NotFound();
-            }
+                var branch = context.Branches
+                                    .Include(b => b.Employees)  // Include the Employees navigation property
+                                    .FirstOrDefault(b => b.Id == id);
 
-            return View(branch);
+                if (branch == null)
+                {
+                    return NotFound();
+                }
+
+                return View(branch);
+            }
         }
-    
-    public IActionResult Register()
+
+
+        public IActionResult Register()
         {
             return View();
         }
@@ -119,7 +123,7 @@ namespace BankBranches.Controllers
             return View(branch);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken] 
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, BankBranch branch)
         {
             if (id != branch.Id)
@@ -148,11 +152,11 @@ namespace BankBranches.Controllers
                         }
                     }
 
-                    return RedirectToAction(nameof(Index));  
+                    return RedirectToAction(nameof(Index));
                 }
             }
 
-         
+
             return View(branch);
         }
 
@@ -161,8 +165,67 @@ namespace BankBranches.Controllers
             return context.Branches.Any(e => e.Id == id);
         }
 
-       
+        [HttpGet]
+        public IActionResult AddEmployee(int id)
+        {
+            using (var context = new BankContext())
+            {
+                var branch = context.Branches.FirstOrDefault(b => b.Id == id);
+                if (branch == null)
+                {
+                    return NotFound();
+                }
 
+                ViewBag.BranchId = id;
+                return View();
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddEmployee(int id, AddEmployeeForm model)
+        {
+            if(ModelState.IsValid)
+    {
+                //if (ModelState.ContainsKey("CivilId") && ModelState["CivilId"].Errors.Any(e => e.ErrorMessage == "Duplicate CivilId"))
+                //{
+                //    ModelState.AddModelError("CivilId", "A duplicate Civil ID was provided.");
+                //}
+                // return View(model);
+
+                using (var context = new BankContext())
+                {
+                    var branch = context.Branches.Include(b => b.Employees).FirstOrDefault(b => b.Id == id);
+                    if (branch == null)
+                    {
+                        ModelState.AddModelError("", $"Branch with ID {id} not found.");
+                        return View(model);
+                    }
+
+                    var employee = new Employee
+                    {
+                        Name = model.Name,
+                        Position = model.Position,
+                        CivilId = model.CivilId,
+                        BankBranchId = id
+                    };
+
+                    branch.Employees.Add(employee);
+                    try
+                    {
+                        context.SaveChanges();
+                        return RedirectToAction("Details", new { id = id });
+
+                    }
+                    catch (DbUpdateException errors)
+                    {
+                        ModelState.AddModelError("CivilId", "A duplicate Civil ID was provided.");
+
+                    }
+                }
+
+            }
+            return View(model);
+
+        }
     }
-
 }

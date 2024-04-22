@@ -1,77 +1,75 @@
-﻿@{
+﻿@model BankBranches.Models.BankBranch
+
+@{
     ViewData["Title"] = "Bank Details";
 }
-@model BankBranches.Models.BankBranch
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank Details</title>
+    <title>@ViewData["Title"]</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             color: black;
             background-color: white;
-            margin: 60px;
+            margin: 20px;
         }
 
-        h2, h4 {
+        h2 {
             color: darkgreen;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         .details-container {
-            display: flex;
-            justify-content: space-between;
             background-color: white;
-            color: black;
-            margin-top: 40px;
             padding: 15px;
             border: 1px solid darkgreen;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .details-list {
-            flex: 1;
             margin-right: 20px;
         }
 
-        dt {
-            font-weight: bold;
-            color: darkgreen;
+        .action-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: darkgreen;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            position: absolute; /* Position relative to the nearest positioned ancestor */
+            top: 20px; /* Position from the top of the nearest positioned ancestor */
+            right: 20px; /* Position from the right of the nearest positioned ancestor */
+            transition: background-color 0.3s;
         }
 
-        dd {
-            margin-left: 10px;
-        }
+            .action-button:hover {
+                background-color: #165b33;
+            }
 
         img {
-            height: 300px; 
-            width: auto; 
-            align-self: center; 
+            height: 200px;
+            width: auto;
         }
 
-        hr {
-            border-color: darkgreen;
+        ul {
+            list-style: none;
+            padding: 0;
         }
-
-        a {
-            text-decoration: none; /* Removes underline from links */
-            color: deepskyblue; 
-        }
-
-            a:hover {
-                text-decoration: underline; /* Optional: Adds underline on hover for better user interaction */
-            }
     </style>
 </head>
 <body>
     <div>
         <h2>Bank Details</h2>
+        <a href="@Url.Action("AddEmployee", "Bank", new { id = Model.Id })" class="action-button">Add Employee</a>
         <hr />
         <div class="details-container">
-            <dl class="details-list dl-horizontal">
+            <dl class="details-list">
                 <dt>Name:</dt>
                 <dd>@Model.Name</dd>
                 <dt>Branch Manager:</dt>
@@ -81,7 +79,16 @@
                 <dt>Location:</dt>
                 <dd><a href="@Model.Location" target="_blank">Location</a></dd>
             </dl>
-            <img src="https://www.gckuwait.com/wp-content/uploads/2016/12/gulf-consult-KFH-Branches2.jpg" alt="Cinque Terre">
+            <img src="https://www.gckuwait.com/wp-content/uploads/2016/12/gulf-consult-KFH-Branches2.jpg" alt="Bank Branch Image">
+        </div>
+        <div>
+            <h4>Employees</h4>
+            <ul>
+                @foreach (var employee in Model.Employees)
+                {
+                    <li>@employee.Name - @employee.Position</li>
+                }
+            </ul>
         </div>
     </div>
 </body>

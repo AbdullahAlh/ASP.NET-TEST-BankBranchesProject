@@ -13,50 +13,38 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            color: black;
-            background-color: white;
             margin: 20px;
         }
 
-        h2 {
-            color: darkgreen;
-            margin-bottom: 20px;
+        .form-group {
+            margin-bottom: 10px;
         }
 
-        form {
-            background-color: white;
-            padding: 20px;
-            border: 1px solid darkgreen;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        label {
+            font-weight: bold;
         }
 
-        .btn-primary {
-            background-color: darkgreen;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-            .btn-primary:hover {
-                background-color: #165b33;
-            }
-
-        input, textarea, select {
+        input[type="text"], input[type="submit"] {
+            width: 100%;
             padding: 8px;
             margin-top: 5px;
-            margin-bottom: 20px;
-            width: calc(100% - 16px);
             box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
         }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+            input[type="submit"]:hover {
+                background-color: #45a049;
+            }
 
         .text-danger {
             color: red;
+            font-size: 0.8em;
         }
     </style>
 </head>
@@ -86,11 +74,8 @@
             <span asp-validation-for="CivilId" class="text-danger"></span>
         </div>
 
-        <button type="submit" class="btn btn-primary">Add Employee</button>
-    </form>
 
-    @section Scripts {
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+        <input type="submit" value="Add Employee" class="btn btn-primary" />
+    </form>
 </body>
 </html>
