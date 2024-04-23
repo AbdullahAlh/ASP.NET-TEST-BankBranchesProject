@@ -1,109 +1,131 @@
-﻿@model List<BankBranch>
+﻿@model BankDashboardViewModel
 
-<h1 style="color: darkgreen; font-family: 'Arial', sans-serif;">Branches</h1>
-
-<div class="toolbar">
-    <a href="/Bank/Create" class="button add-button">Add New Branch</a>
-    <form method="get" action="@Url.Action("Index")" class="search-form">
-        <input type="text" name="searchString" placeholder="Search by name..." aria-label="Search by branch name" class="search-input">
-        <button type="submit" class="search-button">Search</button>
-    </form>
-</div>
-
-<table class="branch-table">
-    <thead>
-        <tr>
-            <th>Branch Name</th>
-            <th>Location</th>
-            <th>Branch Manager</th>
-            <th>Employee Count</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var branch in Model)
-        {
-            <tr>
-                <td><a href="/Bank/Details/@branch.Id">@branch.Name</a></td>
-                <td>
-                    <a href="@branch.Location" target="_blank">
-                        <img src="images/location-outline.svg" height="20px" />
-                    </a>
-                </td>
-                <td>@branch.BranchManager</td>
-                <td>@branch.EmployeeCount</td>
-                <td>
-                    <a href="/Bank/Edit/@branch.Id">Edit</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 20px;
-        background-color: #f4f4f4;
-    }
-
-    h1 {
-        margin-bottom: 20px;
-    }
-
-    .toolbar {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .button, .search-button {
-        background-color: seagreen;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        cursor: pointer;
-        text-decoration: none;
-        font-family: 'Arial', sans-serif;
-    }
-
-        .button:hover, .search-button:hover {
-            background-color: seagreen;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branch Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
         }
 
-    .search-form {
-        display: flex;
-    }
-
-    .search-input {
-        padding: 10px;
-        margin-right: 10px;
-        width: 200px;
-    }
-
-    .branch-table {
-        width: 100%;
-        border-collapse: collapse;
-        background-color: white;
-    }
-
-        .branch-table th, .branch-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ccc;
+        h1 {
+            color: darkgreen;
+            margin-bottom: 20px;
         }
 
-        .branch-table th {
+        .card {
+            margin-bottom: 20px; 
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .button, .search-button {
             background-color: seagreen;
             color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            text-decoration: none;
+            font-family: 'Arial', sans-serif;
         }
 
-    a {
-        color: deepskyblue;
-        text-decoration: none;
-    }
+            .button:hover, .search-button:hover {
+                background-color: #165b33; /* Darkened the hover color for better visibility */
+            }
 
-        a:hover {
-            text-decoration: underline;
+        .search-input {
+            padding: 10px;
+            margin-right: 10px;
+            width: 200px;
         }
-</style>
+
+        .branch-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+            .branch-table th, .branch-table td {
+                padding: 12px 15px;
+                text-align: left;
+                border-bottom: 1px solid #ccc;
+            }
+
+            .branch-table th {
+                background-color: seagreen;
+                color: white;
+            }
+
+        a {
+            color: deepskyblue;
+            text-decoration: none;
+        }
+
+            a:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+    <div class="toolbar">
+        <a href="/Bank/Create" class="button add-button">Add New Branch</a>
+        <form method="get" action="@Url.Action("Index")" class="search-form">
+            <input type="text" name="searchString" placeholder="Search by name..." aria-label="Search by branch name" class="search-input">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </div>
+
+    <table class="branch-table">
+        <thead>
+            <tr>
+                <th>Branch Name</th>
+                <th>Location</th>
+                <th>Branch Manager</th>
+                <th>Employee Count</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var branch in Model.BranchList)
+            {
+                <tr>
+                    <td><a href="@Url.Action("Details", "Bank", new { id = branch.Id })">@branch.Name</a></td>
+                    <td>
+                        <a href="@branch.Location" target="_blank">
+                            <img src="images/location-outline.svg" height="20px" />
+                        </a>
+                    </td>
+                    <td>@branch.BranchManager</td>
+                    <td>@branch.Employees.Count</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Bank", new { id = branch.Id })">Edit</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+<div class="dashboard"> 
+    <h2>Bank Dashboard</h2>
+    <div class="dashboard-info">
+        <div class="dashboard-item"> 
+            <h4>Total Branches: @Model.TotalBranches</h4> 
+            </div>
+            <div class="dashboard-item"> <h4>Total Employees: @Model.TotalEmployees</h4> 
+                </div> <div class="dashboard-item">
+                    <h4>Branch with Most Employees: @Model.BranchWithMostEmployees?.Name</h4> 
+                    </div> 
+                    </div> 
+                    </div>
+                     
+
+
+</html>

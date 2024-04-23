@@ -6,17 +6,16 @@
 
     public class BankContext : DbContext
     {
-        public BankContext()
+        // BankContext.cs
+        public BankContext(DbContextOptions<BankContext> options) : base(options)
         {
-            
+
         }
+        
         public DbSet<BankBranch> Branches { get; set; }
         public DbSet<Employee> Employees { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseSqlite("Data Source=bank.db");
-        }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             
@@ -24,5 +23,7 @@
             modelBuilder.Entity<Employee>().Property(r => r.CivilId).IsRequired();
 
         }
+
+      
     }
 }

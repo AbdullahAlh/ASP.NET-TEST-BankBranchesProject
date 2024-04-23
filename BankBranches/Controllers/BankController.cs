@@ -8,6 +8,12 @@ namespace BankBranches.Controllers
     public class BankController : Controller
 
     {
+        private readonly BankContext _context;
+
+        public BankController(BankContext context)
+        {
+            _context = context;
+        }
         static List<BankBranch> branches = new List<BankBranch>()
   {
       new BankBranch {Id = 1,EmployeeCount = 10, Name = "KFH Salwa",Location = "https://maps.app.goo.gl/GSnB2U7kzSrcZ8Jt8",BranchManager = "Fatmah Buyabes"},
@@ -15,24 +21,22 @@ namespace BankBranches.Controllers
   };
         public IActionResult Index(string searchString)
         {
+            var viewModel = new BankDashboardViewModel();
 
-            List<BankBranch> filteredBranches;
-            using (var context = new BankContext())
+            IQueryable<BankBranch> query = _context.Branches.Include(b => b.Employees);  
+
+            if (!String.IsNullOrEmpty(searchString))
             {
-               // context.Employees.RemoveRange(context.Employees.ToList());
-                // context.SaveChanges();
-
-                IQueryable<BankBranch> query = context.Branches;
-
-                if (!String.IsNullOrEmpty(searchString))
-                {
-                    query = query.Where(branch => branch.Name.Contains(searchString));
-                }
-
-                filteredBranches = query.ToList();
+                query = query.Where(branch => branch.Name.Contains(searchString));
             }
 
-            return View(filteredBranches);
+            viewModel.BranchList = query.ToList();
+            viewModel.TotalBranches = _context.Branches.Count();
+            viewModel.TotalEmployees = _context.Employees.Count();
+            viewModel.BranchWithMostEmployees = _context.Branches
+                .OrderByDescending(b => b.Employees.Count)
+                .FirstOrDefault();
+            return View(viewModel);
         }
 
 
@@ -59,10 +63,10 @@ namespace BankBranches.Controllers
                 branch.Location = location;
 
                 branches.Add(branch);
-                using (var context = new BankContext())
+                using (_context)
                 {
-                    context.Branches.Add(branch);
-                    context.SaveChanges();
+                    _context.Branches.Add(branch);
+                    _context.SaveChanges();
                 }
 
 
@@ -81,10 +85,10 @@ namespace BankBranches.Controllers
                 return NotFound();
             }
 
-            using (var context = new BankContext())
+            using (_context)
             {
-                var branch = context.Branches
-                                    .Include(b => b.Employees)  // Include the Employees navigation property
+                var branch = _context.Branches
+                                    .Include(b => b.Employees)  
                                     .FirstOrDefault(b => b.Id == id);
 
                 if (branch == null)
@@ -110,9 +114,9 @@ namespace BankBranches.Controllers
             }
 
             BankBranch branch;
-            using (var context = new BankContext())
+            using (_context)
             {
-                branch = context.Branches.FirstOrDefault(b => b.Id == id);
+                branch = _context.Branches.FirstOrDefault(b => b.Id == id);
             }
 
             if (branch == null)
@@ -133,16 +137,16 @@ namespace BankBranches.Controllers
 
             if (ModelState.IsValid)
             {
-                using (var context = new BankContext())
+                using (_context)
                 {
                     try
                     {
-                        context.Update(branch);
-                        context.SaveChanges();
+                        _context.Update(branch);
+                        _context.SaveChanges();
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        if (!BranchExists(branch.Id, context))
+                        if (!BranchExists(branch.Id, _context))
                         {
                             return NotFound();
                         }
@@ -168,9 +172,9 @@ namespace BankBranches.Controllers
         [HttpGet]
         public IActionResult AddEmployee(int id)
         {
-            using (var context = new BankContext())
+            using (_context)
             {
-                var branch = context.Branches.FirstOrDefault(b => b.Id == id);
+                var branch = _context.Branches.FirstOrDefault(b => b.Id == id);
                 if (branch == null)
                 {
                     return NotFound();
@@ -192,9 +196,9 @@ namespace BankBranches.Controllers
                 //}
                 // return View(model);
 
-                using (var context = new BankContext())
+                using (_context)
                 {
-                    var branch = context.Branches.Include(b => b.Employees).FirstOrDefault(b => b.Id == id);
+                    var branch = _context.Branches.Include(b => b.Employees).FirstOrDefault(b => b.Id == id);
                     if (branch == null)
                     {
                         ModelState.AddModelError("", $"Branch with ID {id} not found.");
@@ -212,7 +216,7 @@ namespace BankBranches.Controllers
                     branch.Employees.Add(employee);
                     try
                     {
-                        context.SaveChanges();
+                        _context.SaveChanges();
                         return RedirectToAction("Details", new { id = id });
 
                     }
@@ -221,11 +225,14 @@ namespace BankBranches.Controllers
                         ModelState.AddModelError("CivilId", "A duplicate Civil ID was provided.");
 
                     }
+
                 }
 
             }
             return View(model);
 
         }
+      
+
     }
 }
