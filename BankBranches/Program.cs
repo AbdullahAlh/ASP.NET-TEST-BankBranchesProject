@@ -13,9 +13,26 @@ builder.Services.AddDbContext<BankContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization();
 
 var app = builder.Build();
 
+
+
+var supportedCultures = new[] { "en", "ar" };
+var requestLocalizationOptions = new RequestLocalizationOptions()
+    .SetDefaultCulture("ar")
+    .AddSupportedCultures(supportedCultures)
+    .AddSupportedUICultures(supportedCultures);
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Bank}/{action=Index}/{id?}");
+
+app.UseRequestLocalization(requestLocalizationOptions);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

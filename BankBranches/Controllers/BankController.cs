@@ -1,4 +1,5 @@
 ﻿using BankBranches.Models;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata;
@@ -12,13 +13,22 @@ namespace BankBranches.Controllers
 
         public BankController(BankContext context)
         {
-            _context = context;
+          _context = context;
         }
         static List<BankBranch> branches = new List<BankBranch>()
   {
       new BankBranch {Id = 1,EmployeeCount = 10, Name = "KFH Salwa",Location = "https://maps.app.goo.gl/GSnB2U7kzSrcZ8Jt8",BranchManager = "Fatmah Buyabes"},
       new BankBranch {Id=2,EmployeeCount = 20, Name = "KFH Mishref",Location = "https://g.co/kgs/Y86f6VW",BranchManager = "Fatmah Alghannam"}
   };
+
+        public IActionResult ChangeLanguage(string language = "en")
+        {
+            Response.Cookies.Append(
+            CookieRequestCultureProvider.DefaultCookieName,
+            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(language)),
+            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) });
+            return RedirectToAction("Index");
+        }
         public IActionResult Index(string searchString)
         {
             var viewModel = new BankDashboardViewModel();
@@ -232,7 +242,9 @@ namespace BankBranches.Controllers
             return View(model);
 
         }
+
       
 
     }
+
 }

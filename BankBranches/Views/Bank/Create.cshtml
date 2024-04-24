@@ -1,15 +1,12 @@
-﻿@model BankBranches.Models.AddEmployeeForm
-
-@{
-    ViewData["Title"] = "Add Employee";
-}
+﻿@model NewBranchForm
+@inject IViewLocalizer Localizer
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
+    <title>@Localizer["Create New Branch"]</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -23,74 +20,79 @@
             margin-bottom: 20px;
         }
 
-        form {
+        .form-container {
             background-color: white;
             padding: 20px;
             border: 1px solid darkgreen;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            margin: 0 auto; /* Center the form */
         }
 
-        .btn-primary {
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
             background-color: darkgreen;
             color: white;
             border: none;
-            padding: 10px 20px;
-            cursor: pointer;
             border-radius: 4px;
-            transition: background-color 0.3s;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-            .btn-primary:hover {
+            button:hover {
                 background-color: #165b33;
             }
-
-        input, textarea, select {
-            padding: 8px;
-            margin-top: 5px;
-            margin-bottom: 20px;
-            width: calc(100% - 16px);
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .text-danger {
-            color: red;
-        }
     </style>
 </head>
 <body>
-    <h2>@ViewData["Title"]</h2>
+    <div>
+        <h2>@Localizer["Create New Branch"]</h2>
+        <div class="form-container">
+            @using (Html.BeginForm("New", "Bank", FormMethod.Post, new { @class = "custom-form" }))
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, Localizer["Name"].Value)
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                </div>
 
-    <form asp-action="AddEmployee" method="post">
-        @Html.AntiForgeryToken()
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Location, Localizer["Location"].Value)
+                    @Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                </div>
 
-@*         <input type="hidden" asp-for="BankBranchId" />
- *@
-        <div class="form-group">
-            <label asp-for="Name">Name:</label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BranchManager, Localizer["BranchManager"].Value)
+                    @Html.EditorFor(model => model.BranchManager, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.EmployeeCount, Localizer["EmployeeCount"].Value)
+                    @Html.EditorFor(model => model.EmployeeCount, new { htmlAttributes = new { @class = "form-control", required = "required", type = "number" } })
+                </div>
+
+                <button type="submit" class="btn">@Localizer["save"]</button>
+            }
         </div>
-
-        <div class="form-group">
-            <label asp-for="Position">Position:</label>
-            <input asp-for="Position" class="form-control" />
-            <span asp-validation-for="Position" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="CivilId">Civil ID:</label>
-            <input asp-for="CivilId" class="form-control" />
-            <span asp-validation-for="CivilId" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Add Employee</button>
-    </form>
-
-    @section Scripts {
-    await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    </div>
 </body>
 </html>

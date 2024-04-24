@@ -1,4 +1,6 @@
+using Azure;
 using BankBranches.Models;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -17,6 +19,14 @@ namespace BankBranches.Controllers
         {
             return View();
         }
+        public IActionResult ChangeLanguage(string language = "en")
+        {
+            Response.Cookies.Append(
+            CookieRequestCultureProvider.DefaultCookieName,
+            CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(language)),
+            new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) });
+            return RedirectToAction("Index");
+}
 
         public IActionResult Privacy()
         {
@@ -28,5 +38,7 @@ namespace BankBranches.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
+
 }

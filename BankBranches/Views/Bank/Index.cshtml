@@ -1,11 +1,11 @@
 ﻿@model BankDashboardViewModel
-
+@inject IViewLocalizer Localizer
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Branch Dashboard</title>
+    <title>@Localizer["Branch Dashboard"]</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -77,21 +77,21 @@
     </style>
 </head>
     <div class="toolbar">
-        <a href="/Bank/Create" class="button add-button">Add New Branch</a>
+        <a href="/Bank/Create" class="button add-button">@Localizer["Add New Branch"]</a>
         <form method="get" action="@Url.Action("Index")" class="search-form">
             <input type="text" name="searchString" placeholder="Search by name..." aria-label="Search by branch name" class="search-input">
-            <button type="submit" class="search-button">Search</button>
+            <button type="submit" class="search-button">@Localizer["search"]</button>
         </form>
     </div>
 
     <table class="branch-table">
         <thead>
             <tr>
-                <th>Branch Name</th>
-                <th>Location</th>
-                <th>Branch Manager</th>
-                <th>Employee Count</th>
-                <th>Actions</th>
+                <th>@Localizer["Branch Name"]</th>
+                <th>@Localizer["Location"]</th>
+                <th>@Localizer["Branch Manager"]</th>
+                <th>@Localizer["EmployeeCount"]</th>
+                <th>@Localizer["Actions"]</th>
             </tr>
         </thead>
         <tbody>
@@ -107,21 +107,21 @@
                     <td>@branch.BranchManager</td>
                     <td>@branch.Employees.Count</td>
                     <td>
-                        <a href="@Url.Action("Edit", "Bank", new { id = branch.Id })">Edit</a>
+                        <a href="@Url.Action("Edit", "Bank", new { id = branch.Id })"> @Localizer["Edit"]</a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 <div class="dashboard"> 
-    <h2>Bank Dashboard</h2>
+    <h2>@Localizer["Bank Dashboard"]</h2>
     <div class="dashboard-info">
         <div class="dashboard-item"> 
-            <h4>Total Branches: @Model.TotalBranches</h4> 
+            <h4>@Localizer["Total Branches"]: @Model.TotalBranches</h4> 
             </div>
-            <div class="dashboard-item"> <h4>Total Employees: @Model.TotalEmployees</h4> 
+            <div class="dashboard-item"> <h4>@Localizer["Total Employees"]: @Model.TotalEmployees</h4> 
                 </div> <div class="dashboard-item">
-                    <h4>Branch with Most Employees: @Model.BranchWithMostEmployees?.Name</h4> 
+                    <h4>@Localizer["Branch with Most Employees"]: @Model.BranchWithMostEmployees?.Name</h4> 
                     </div> 
                     </div> 
                     </div>
